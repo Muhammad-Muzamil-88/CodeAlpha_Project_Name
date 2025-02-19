@@ -1,0 +1,153 @@
+// GPA and CGPA Calculator
+
+
+#include <iostream>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+void printHeader(string title)
+{
+    cout << "\n**************************************" << endl;
+    cout << "         " << title << endl;
+    cout << "**************************************"<< endl;
+    cout<<endl;
+}
+
+// Function to calculate GPA
+double enteringDetail()
+{
+    int numberOfCourses;
+    printHeader("Enter Course Details");
+
+    cout << "Enter the number of courses: ";
+    cin >> numberOfCourses;
+
+    if (numberOfCourses <= 0)
+    {
+        cout << "Error: You must enter at least one course." << endl;
+        return 0;
+    }
+
+    vector<string> courseName(numberOfCourses);
+    vector<double> gradePoints(numberOfCourses);
+    vector<double> creditHours(numberOfCourses);
+
+    double totalGradeCredit = 0.0, totalCredits = 0.0;
+
+    cin.ignore();
+
+    for (int i = 0; i < numberOfCourses; i++)
+    {
+        cout << "\n--------------------------------------" << endl;
+
+        cout << "Course " << i + 1 << " Name: ";
+        getline(cin, courseName[i]);
+
+        cout << "Grade Point (like, 4.0, 3.5): ";
+        cin >> gradePoints[i];
+
+        cout << "Credit Hours: ";
+        cin >> creditHours[i];
+        cin.ignore();
+
+        // Validate input
+        if (gradePoints[i] < 0.0 || gradePoints[i] > 4.0)
+        {
+            cout << "Invalid grade point! Must be between 0.0 and 4.0." << endl;
+            return 0;
+        }
+
+        if (creditHours[i] <= 0)
+        {
+            cout << "Invalid credit hours! Must be greater than 0." << endl;
+            return 0;
+        }
+
+        totalGradeCredit += gradePoints[i] * creditHours[i];
+        totalCredits += creditHours[i];
+    }
+
+    if (totalCredits == 0)
+    {
+        cout << "Error: Total credit hours cannot be zero." << endl;
+        return 0;
+    }
+
+    double GPA = totalGradeCredit / totalCredits;
+
+    // Display course details
+    printHeader("Course Summary");
+    cout << left << setw(20) << "Course Name"
+         << setw(15) << "Grade Point"
+         << setw(15) << "Credit Hours" << endl;
+    cout << "---------------------------------------------------" << endl;
+
+    for (int i = 0; i < numberOfCourses; i++)
+    {
+        cout << left << setw(20) << courseName[i]<< setw(15) << gradePoints[i]<< setw(15) << creditHours[i] << endl;
+    }
+
+    return GPA;
+}
+
+int main()
+{
+    cout << fixed << setprecision(2);
+
+    printHeader("GPA & CGPA CALCULATOR");
+
+    string choice;
+    cout << "What do you want to calculate? (GPA/CGPA): ";
+    cin >> choice;
+
+    // Converting to uppercase
+    for (char &ch : choice)
+    {
+        ch = toupper(ch);
+    }
+
+    // For GPA:
+    if (choice == "GPA")
+    {
+        double GPA = enteringDetail();
+        cout << "\nYour GPA is: " << GPA << endl;
+    }
+    // For CGPA:
+    else if (choice == "CGPA")
+    {
+        int semesters;
+        cout << "\nEnter number of semesters: ";
+        cin >> semesters;
+
+        if (semesters <= 0)
+        {
+            cout << "Error: Number of semesters must be at least 1." << endl;
+            return 1;
+        }
+
+        vector<double> GPA(semesters);
+        double totalCGPA = 0.0;
+
+        for (int i = 0; i < semesters; i++)
+        {
+            cout << "\n-------> Enter the details of Semester " << i + 1 << " <-------" << endl;
+            GPA[i] = enteringDetail();
+            cout << "Your GPA for Semester " << i + 1 << " is: " << GPA[i] << "\n"<< endl;
+            totalCGPA += GPA[i];
+        }
+
+        cout << "\nYour CGPA is: " << totalCGPA / semesters << endl;
+    }
+
+    else
+    {
+        cout << "Invalid option! Please enter 'GPA' or 'CGPA'." << endl;
+        return 1;
+    }
+
+    cout << "\nThank you for using the GPA & CGPA Calculator!\n"
+         << endl;
+    return 0;
+}
